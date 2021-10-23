@@ -28,7 +28,11 @@ class TransmitterCreate(TransmitterBase):
     pass
 
 
-class Transmitter(TransmitterBase):
+class TransmitterUpdate(TransmitterBase):
+    pass
+
+
+class TransmitterInDB(TransmitterBase):
     id: int
 
     class Config:

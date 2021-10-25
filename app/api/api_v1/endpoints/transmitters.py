@@ -96,7 +96,7 @@ def delete_transmitter(
     return transmitter
 
 
-@router.delete("/delete/external_id", response_model=schemas.Transmitter)
+@router.delete("/delete/external_id/", response_model=schemas.Transmitter)
 def delete_transmitter_by_external_id(
         external_id: int
 ):

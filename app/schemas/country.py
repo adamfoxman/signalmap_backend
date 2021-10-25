@@ -11,9 +11,13 @@ class CountryCreate(CountryBase):
     pass
 
 
+class CountryUpdate(CountryBase):
+    pass
+
+
 class Country(CountryBase):
     id: int
-    transmitters: List[Transmitter] = []
+    # transmitters: List[Transmitter] = []
 
     class Config:
         orm_mode = True

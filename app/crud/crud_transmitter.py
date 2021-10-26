@@ -9,7 +9,7 @@ from app.schemas.transmitter import TransmitterCreate, TransmitterInDB, Transmit
 from app.crud.base import CRUDBase
 
 
-class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate]):
+class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterUpdate]):
     def get_transmitters_by_mode_country(self,
                                          db: Session,
                                          mode: str,

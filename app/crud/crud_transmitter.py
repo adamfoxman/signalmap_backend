@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Union, Any, Dict, Optional
 
 from app.crud.crud_country import get_country
-from app.models.transmitter import Transmitter as TransmitterModel, TransmitterType, Polarisation
+from app.models.transmitter import Transmitter as TransmitterModel
 from app.schemas.transmitter import TransmitterCreate, TransmitterInDB, TransmitterBase, TransmitterUpdate
 # import app.schemas as schemas
 
@@ -18,7 +18,7 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
         return db.query(TransmitterModel).filter(
             TransmitterModel.country_id == country_id
         ).filter(
-            TransmitterModel.mode == TransmitterType[mode]
+            TransmitterModel.mode == mode
         )
 
     def get_transmitters(self,
@@ -34,14 +34,13 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
         country_id = get_country(db, country)
         query = db.query(TransmitterModel).filter(
             TransmitterModel.country_id == country_id
-        ).filter(TransmitterModel.mode == TransmitterType[mode])
+        ).filter(TransmitterModel.mode == mode)
         if frequency is not None:
             query = query.filter(TransmitterModel.frequency == frequency)
         if erp is not None:
             query = query.filter(TransmitterModel.erp == erp)
         if polarisation is not None:
-            query = query.filter(TransmitterModel.polarisation ==
-                                 Polarisation[polarisation])
+            query = query.filter(TransmitterModel.polarisation == polarisation)
         if location is not None:
             query = query.filter(TransmitterModel.location.find(location))
         if region is not None:

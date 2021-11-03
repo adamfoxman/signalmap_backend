@@ -6,20 +6,20 @@ from pydantic import BaseModel
 class TransmitterBase(BaseModel):
     external_id: int
     frequency: float
-    mode: enum.Enum
+    mode: str
     erp: float
     antenna_height: int
-    antenna_pattern: enum.Enum
+    antenna_pattern: str
     antenna_direction: Optional[int] = None
     pattern_h: Optional[str] = None
     pattern_v: Optional[str] = None
-    polarisation: enum.Enum
+    polarisation: str
     location: str
     region: str
     country_id: int
     latitude: float
     longitude: float
-    precision: enum.Enum
+    precision: int
     height: int
     station: str
 

@@ -11,7 +11,7 @@ router = APIRouter()
 
 # GET
 # ---------------------------------------------------------
-@router.get("/id/", response_model=schemas.Transmitter)
+@router.get("/get", response_model=schemas.Transmitter)
 def get_transmitter_by_id(
         id: int
 ) -> Any:
@@ -20,7 +20,7 @@ def get_transmitter_by_id(
     return transmitter
 
 
-@router.get("/external_id/", response_model=schemas.Transmitter)
+@router.get("/get", response_model=schemas.Transmitter)
 def get_transmitter_by_external_id(
         external_id: int,
 ) -> Any:

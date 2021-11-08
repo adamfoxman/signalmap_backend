@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Union, Any, Dict, Optional
 
+from app.api.deps import get_db
 from app.crud.crud_country import get_country
 from app.models.transmitter import Transmitter as TransmitterModel
 from app.schemas.transmitter import TransmitterCreate, TransmitterInDB, TransmitterBase, TransmitterUpdate
@@ -88,21 +89,29 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
 
     def update_transmitter(self, db: Session,
                            transmitter: TransmitterModel,
-                           obj: Union[TransmitterUpdate, Dict[str, Any]]) -> TransmitterModel:
+                           obj: Union[TransmitterUpdate, Dict[TransmitterModel, Any]]) -> TransmitterModel:
         if isinstance(obj, dict):
             update_data = obj
         else:
             update_data = obj.dict(exclude_unset=True)
-        return super().update(db, db_obj=transmitter, obj_in=update_data)
+        db.query(TransmitterModel).filter(TransmitterModel.id == transmitter.id).update(update_data)
+        db.commit()
+        return db.query(TransmitterModel).filter(TransmitterModel.id == transmitter.id).first()
 
     def delete_transmitter(self, db: Session,
-                           id: int):
-        db.query(TransmitterModel).filter(TransmitterModel.id == id).delete()
+                           id: int) -> TransmitterModel:
+        # db.query(TransmitterModel).filter(TransmitterModel.id == id).delete()
+        # db.commit()
+        model = db.query(TransmitterModel).filter(TransmitterModel.id == id).first()
+        db.delete(model)
         db.commit()
+        return model
 
     def delete_transmitter_by_external_id(self, db: Session, external_id: int):
-        db.query(TransmitterModel).filter(TransmitterModel.external_id == external_id).delete()
+        model = db.query(TransmitterModel).filter(TransmitterModel.external_id == external_id).first()
+        db.delete(model)
         db.commit()
+        return model
 
 
 transmitter = CRUDTransmitter(TransmitterModel)

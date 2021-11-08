@@ -16,7 +16,7 @@ class TransmitterBase(BaseModel):
     polarisation: str
     location: str
     region: str
-    country_id: int
+    country_id: str
     latitude: float
     longitude: float
     precision: int

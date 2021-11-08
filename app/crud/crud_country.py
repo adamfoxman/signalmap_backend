@@ -9,45 +9,38 @@ from app.crud.base import CRUDBase
 
 
 class CRUDCountry(CRUDBase[Country, CountryBase, CountryCreate]):
-    def get_countries(self, 
+    def get_countries(self,
                       db: Session) -> List[Country]:
         return db.query(CountryModel).all()
 
     def get_country(self, db: Session,
-                    country: str) -> CountryModel:
-        return db.query(CountryModel).filter(CountryModel.country_code == country).first()
-
-    def get_country_by_id(self, db: Session, country_id: int) -> CountryModel:
-        return db.query(CountryModel).filter(CountryModel.id == country_id).first()
+                    country_code: str) -> CountryModel:
+        return db.query(CountryModel).filter(CountryModel.country_code == country_code).first()
 
     def create_country(self, db: Session,
                        country: CountryBase) -> CountryModel:
         db_country = CountryModel(country_code=country.country_code,
-                                  is_enabled=False)
+                                  is_enabled=country.is_enabled)
         db.add(db_country)
         db.commit()
         db.refresh(db_country)
         return db_country
 
-    def update_country(self, db: Session, country: CountryModel,
-                       obj: Union[CountryUpdate, Dict[str, Any]]) -> CountryModel:
+    def update_country(self, db: Session, country_code: str,
+                       obj: Union[Country, Dict[Country, Any]]) -> CountryModel:
         if isinstance(obj, dict):
             update_data = obj
         else:
             update_data = obj.dict(exclude_unset=True)
-        return super().update(db, db_obj=country, obj_in=update_data)
-
-    def delete_country(self, db: Session, country_id: int, country: CountryModel = CountryModel):
-        country_tbd = db.query(country).filter(country.id == country_id).first()
-        country_tbd.delete()
+        db.query(CountryModel).filter(CountryModel.country_code == country_code).update(update_data)
         db.commit()
-        return country_tbd
+        return db.query(CountryModel).filter(CountryModel.country_code == country_code).first()
 
-    def delete_country_by_code(self, db: Session, country_code: str, country: CountryModel = CountryModel):
-        country_tbd = db.query(country).filter(country.country_code == country_code).first()
-        country_tbd.delete()
+    def delete_country(self, db: Session, country_code: str) -> CountryModel:
+        model = db.query(CountryModel).filter(CountryModel.country_code == country_code).first()
+        db.delete(model)
         db.commit()
-        return country_tbd
+        return model
 
 
 def get_country(db: Session,

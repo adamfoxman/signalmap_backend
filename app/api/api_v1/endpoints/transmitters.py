@@ -15,7 +15,7 @@ router = APIRouter()
 def get_transmitter_by_id(
         id: int
 ) -> Any:
-    db = deps.get_db()
+    db = next(deps.get_db())
     transmitter = crud.transmitter.get_transmitter_by_id(db, id)
     return transmitter
 
@@ -24,7 +24,7 @@ def get_transmitter_by_id(
 def get_transmitter_by_external_id(
         external_id: int,
 ) -> Any:
-    db = deps.get_db()
+    db = next(deps.get_db())
     transmitter = crud.transmitter.get_transmitter_by_external_id(db, external_id)
     return transmitter
 
@@ -40,7 +40,7 @@ def get_transmitters(
         region: Optional[str] = None,
         station: Optional[str] = None
 ):
-    db = deps.get_db()
+    db = next(deps.get_db())
     transmitters = crud.transmitter.get_transmitters(
         db=db,
         mode=mode,
@@ -57,11 +57,11 @@ def get_transmitters(
 
 # CREATE
 # -----------------------------------------------------------
-@router.post("/create/", response_model=schemas.Transmitter)
+@router.post("/create/", response_model=schemas.TransmitterBase)
 def create_transmitter(
-        transmitter_in: schemas.Transmitter
+        transmitter_in: schemas.TransmitterBase
 ) -> Any:
-    db = deps.get_db()
+    db = next(deps.get_db())
     new_transmitter = crud.transmitter.create_transmitter(db=db,
                                                           transmitter=transmitter_in)
     return new_transmitter
@@ -74,7 +74,7 @@ def update_transmitter(
         transmitter_id: int,
         transmitter_in: schemas.Transmitter
 ) -> Any:
-    db = deps.get_db()
+    db = next(deps.get_db())
     transmitter = crud.transmitter.get_transmitter_by_id(db, transmitter_id)
     if not transmitter:
         raise HTTPException(status_code=404, detail="Transmitter not found")
@@ -88,7 +88,7 @@ def update_transmitter(
 def delete_transmitter(
         transmitter_id: int
 ):
-    db = deps.get_db()
+    db = next(deps.get_db())
     transmitter = crud.transmitter.get_transmitter_by_id(db, transmitter_id)
     if not transmitter:
         raise HTTPException(status_code=404, detail="Transmitter not found")
@@ -100,7 +100,7 @@ def delete_transmitter(
 def delete_transmitter_by_external_id(
         external_id: int
 ):
-    db = deps.get_db()
+    db = next(deps.get_db())
     transmitter = crud.transmitter.get_transmitter_by_external_id(db, external_id)
     if not transmitter:
         raise HTTPException(status_code=404, detail="Transmitter not found")

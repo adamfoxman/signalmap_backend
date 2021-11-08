@@ -46,7 +46,7 @@ from .intenum import IntEnum
 class Transmitter(Base):
     __tablename__ = "transmitters"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     external_id = Column(Integer, index=True)  # id from external database
     frequency = Column(Float, index=True)
     mode = Column(String, index=True, default="")
@@ -59,11 +59,11 @@ class Transmitter(Base):
     polarisation = Column(String, default="")
     location = Column(String)
     region = Column(String)
-    country_id = Column(Integer, ForeignKey("countries.id"))
+    country_id = Column(String, ForeignKey("countries.country_code"))
     latitude = Column(Float)
     longitude = Column(Float)
     precision = Column(Integer, default=0)
     height = Column(Integer, default=0)
     station = Column(String, default="")
 
-    country = relationship("Country", back_populates="transmitters")
+    # country = relationship("Country", back_populates="transmitters")

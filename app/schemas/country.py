@@ -5,6 +5,7 @@ from app.models.transmitter import Transmitter
 
 class CountryBase(BaseModel):
     country_code: str
+    is_enabled: bool
 
 
 class CountryCreate(CountryBase):
@@ -16,8 +17,5 @@ class CountryUpdate(CountryBase):
 
 
 class Country(CountryBase):
-    id: int
-    # transmitters: List[Transmitter] = []
-
     class Config:
         orm_mode = True

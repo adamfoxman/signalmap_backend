@@ -81,7 +81,9 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
                                           longitude=transmitter.longitude,
                                           precision=transmitter.precision,
                                           height=transmitter.height,
-                                          station=transmitter.station)
+                                          station=transmitter.station,
+                                          kml_file=transmitter.kml_file,
+                                          coverage_file=transmitter.coverage_file)
         db.add(db_transmitter)
         db.commit()
         db.refresh(db_transmitter)
@@ -100,8 +102,6 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
 
     def delete_transmitter(self, db: Session,
                            id: int) -> TransmitterModel:
-        # db.query(TransmitterModel).filter(TransmitterModel.id == id).delete()
-        # db.commit()
         model = db.query(TransmitterModel).filter(TransmitterModel.id == id).first()
         db.delete(model)
         db.commit()

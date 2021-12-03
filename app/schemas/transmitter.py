@@ -22,6 +22,8 @@ class TransmitterBase(BaseModel):
     precision: int
     height: int
     station: str
+    kml_file: Optional[str] = None
+    coverage_file: Optional[str] = None
 
 
 class TransmitterCreate(TransmitterBase):
@@ -39,5 +41,6 @@ class TransmitterInDB(TransmitterBase):
         orm_mode = True
 
 
-class Transmitter(TransmitterInDB):
-    pass
+class Transmitter(TransmitterBase):
+    class Config:
+        orm_mode = True

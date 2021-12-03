@@ -22,16 +22,17 @@ def get_transmitter_by_id(
 
 @router.get("/get/external/", response_model=schemas.Transmitter)
 def get_transmitter_by_external_id(
-        external_id: int,
+        band: str,
+        external_id: int
 ) -> Any:
     db = next(deps.get_db())
-    transmitter = crud.transmitter.get_transmitter_by_external_id(db, external_id)
+    transmitter = crud.transmitter.get_transmitter_by_external_id(db, band, external_id)
     return transmitter
 
 
 @router.get("/query/", response_model=List[schemas.Transmitter])
 def get_transmitters(
-        mode: str,
+        band: str,
         country: str,
         frequency: Optional[float] = None,
         erp: Optional[float] = None,
@@ -43,7 +44,7 @@ def get_transmitters(
     db = next(deps.get_db())
     transmitters = crud.transmitter.get_transmitters(
         db=db,
-        mode=mode,
+        band=band,
         country=country,
         frequency=frequency,
         erp=erp,
@@ -62,7 +63,11 @@ def create_transmitter(
         transmitter_in: schemas.Transmitter
 ) -> Any:
     db = next(deps.get_db())
-    check_transmitter = crud.transmitter.get_transmitter_by_external_id(db, transmitter_in.external_id)
+    check_transmitter = crud.transmitter.get_transmitter_by_external_id(
+        db,
+        transmitter_in.band,
+        transmitter_in.external_id
+    )
     if check_transmitter:
         raise HTTPException(status_code=400, detail="Transmitter already exists")
     else:
@@ -87,11 +92,12 @@ def update_transmitter(
 
 @router.put("/update/", response_model=schemas.TransmitterInDB)
 def update_transmitter_by_external_id(
+        band: str,
         external_id: int,
         transmitter_in: schemas.Transmitter
 ) -> Any:
     db = next(deps.get_db())
-    transmitter = crud.transmitter.get_transmitter_by_external_id(db, external_id)
+    transmitter = crud.transmitter.get_transmitter_by_external_id(db, band, external_id)
     if not transmitter:
         raise HTTPException(status_code=404, detail="Transmitter not found")
     transmitter = crud.transmitter.update_transmitter(db, external_id, transmitter_in)
@@ -114,11 +120,12 @@ def delete_transmitter(
 
 @router.delete("/delete/external_id/", response_model=schemas.Transmitter)
 def delete_transmitter_by_external_id(
+        band: str,
         external_id: int
 ):
     db = next(deps.get_db())
-    transmitter = crud.transmitter.get_transmitter_by_external_id(db, external_id)
+    transmitter = crud.transmitter.get_transmitter_by_external_id(db, band, external_id)
     if not transmitter:
         raise HTTPException(status_code=404, detail="Transmitter not found")
-    transmitter = crud.transmitter.delete_transmitter_by_external_id(db, external_id)
+    transmitter = crud.transmitter.delete_transmitter_by_external_id(db, band, external_id)
     return transmitter

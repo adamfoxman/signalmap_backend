@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 class TransmitterBase(BaseModel):
     external_id: int
+    band: str
     frequency: float
     mode: str
     erp: float

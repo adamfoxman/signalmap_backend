@@ -12,6 +12,7 @@ class Transmitter(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     external_id = Column(Integer, index=True)  # id from external database
+    band = Column(String, index=True)
     frequency = Column(Float, index=True)
     mode = Column(String, index=True, default="")
     erp = Column(Float, default=1)

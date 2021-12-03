@@ -5,7 +5,6 @@ from app.api.deps import get_db
 from app.crud.crud_country import get_country
 from app.models.transmitter import Transmitter as TransmitterModel
 from app.schemas.transmitter import TransmitterCreate, TransmitterInDB, TransmitterBase, TransmitterUpdate
-# import app.schemas as schemas
 
 from app.crud.base import CRUDBase
 
@@ -13,18 +12,18 @@ from app.crud.base import CRUDBase
 class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterUpdate]):
     def get_transmitters_by_mode_country(self,
                                          db: Session,
-                                         mode: str,
+                                         band: str,
                                          country: str) -> List[TransmitterModel]:
         country_id = get_country(db, country)
         return db.query(TransmitterModel).filter(
             TransmitterModel.country_id == country_id
         ).filter(
-            TransmitterModel.mode == mode
+            TransmitterModel.band == band
         )
 
     def get_transmitters(self,
                          db: Session,
-                         mode: str,
+                         band: str,
                          country: str,
                          frequency: Optional[float] = None,
                          erp: Optional[float] = None,
@@ -35,7 +34,7 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
         country_id = get_country(db, country)
         query = db.query(TransmitterModel).filter(
             TransmitterModel.country_id == country_id
-        ).filter(TransmitterModel.mode == mode)
+        ).filter(TransmitterModel.band == band)
         if frequency is not None:
             query = query.filter(TransmitterModel.frequency == frequency)
         if erp is not None:
@@ -57,14 +56,19 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
         query = db.query(TransmitterModel).filter(TransmitterModel.id == transmitter_id).first()
         return query
 
-    def get_transmitter_by_external_id(self, db: Session, external_id: int) -> TransmitterModel:
-        query = db.query(TransmitterModel).filter(TransmitterModel.external_id == external_id).first()
+    def get_transmitter_by_external_id(self, db: Session, band: str, external_id: int) -> TransmitterModel:
+        query = db.query(TransmitterModel).filter(
+            TransmitterModel.band == band
+        ).filter(
+            TransmitterModel.external_id == external_id
+        ).first()
         return query
 
     def create_transmitter(self,
                            db: Session,
                            transmitter: TransmitterCreate) -> TransmitterModel:
         db_transmitter = TransmitterModel(external_id=transmitter.external_id,
+                                          band=transmitter.band,
                                           frequency=transmitter.frequency,
                                           mode=transmitter.mode,
                                           erp=transmitter.erp,
@@ -107,8 +111,12 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
         db.commit()
         return model
 
-    def delete_transmitter_by_external_id(self, db: Session, external_id: int):
-        model = db.query(TransmitterModel).filter(TransmitterModel.external_id == external_id).first()
+    def delete_transmitter_by_external_id(self, db: Session, band: str, external_id: int):
+        model = db.query(TransmitterModel).filter(
+            TransmitterModel.band == band
+        ).filter(
+            TransmitterModel.external_id == external_id
+        ).first()
         db.delete(model)
         db.commit()
         return model

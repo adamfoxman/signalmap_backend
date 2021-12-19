@@ -8,6 +8,7 @@ class Country(Base):
     __tablename__ = "countries"
 
     country_code = Column(String, index=True, primary_key=True)
+    country_name = Column(String, index=True)
     is_enabled = Column(Boolean, default=False)
 
     transmitters = relationship("Transmitter")

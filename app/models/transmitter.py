@@ -1,10 +1,7 @@
 from app.db.base_class import Base
 
-from enum import IntEnum as EnumType
 from sqlalchemy import Column, ForeignKey, Float, String, CHAR, Integer, Enum, Boolean
 from sqlalchemy.orm import relationship
-
-from .intenum import IntEnum
 
 
 class Transmitter(Base):
@@ -33,4 +30,4 @@ class Transmitter(Base):
     kml_file = Column(String, default="")
     coverage_file = Column(String, default="")
 
-    # country = relationship("Country", back_populates="transmitters")
+    country = relationship("Country", back_populates="transmitters")

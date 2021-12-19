@@ -20,6 +20,7 @@ class CRUDCountry(CRUDBase[Country, CountryBase, CountryCreate]):
     def create_country(self, db: Session,
                        country: CountryBase) -> CountryModel:
         db_country = CountryModel(country_code=country.country_code,
+                                  country_name=country.country_name,
                                   is_enabled=country.is_enabled)
         db.add(db_country)
         db.commit()

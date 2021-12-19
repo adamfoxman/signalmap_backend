@@ -5,6 +5,7 @@ from app.models.transmitter import Transmitter
 
 class CountryBase(BaseModel):
     country_code: str
+    country_name: str
     is_enabled: bool
 
 

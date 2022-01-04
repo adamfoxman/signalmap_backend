@@ -11,7 +11,7 @@ class TransmitterBase(BaseModel):
     erp: float
     antenna_height: int
     antenna_pattern: str
-    antenna_direction: Optional[int] = None
+    antenna_direction: str
     pattern_h: Optional[str] = None
     pattern_v: Optional[str] = None
     polarisation: str

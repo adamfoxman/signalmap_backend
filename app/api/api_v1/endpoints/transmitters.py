@@ -30,6 +30,16 @@ def get_transmitter_by_external_id(
     return transmitter
 
 
+@router.get("/get/band_country/", response_model=List[schemas.Transmitter])
+def get_transmitters_by_band_country(
+        band: str,
+        country: str
+) -> Any:
+    db = next(deps.get_db())
+    transmitters = crud.transmitter.get_transmitters_by_band_country(db, band, country)
+    return transmitters
+
+
 @router.get("/query/", response_model=List[schemas.Transmitter])
 def get_transmitters(
         band: str,
@@ -40,7 +50,7 @@ def get_transmitters(
         location: Optional[str] = None,
         region: Optional[str] = None,
         station: Optional[str] = None
-):
+) -> Any:
     db = next(deps.get_db())
     transmitters = crud.transmitter.get_transmitters(
         db=db,

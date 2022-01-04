@@ -4,22 +4,22 @@ from typing import List, Union, Any, Dict, Optional
 from app.api.deps import get_db
 from app.crud.crud_country import get_country
 from app.models.transmitter import Transmitter as TransmitterModel
-from app.schemas.transmitter import TransmitterCreate, TransmitterInDB, TransmitterBase, TransmitterUpdate
+from app.schemas.transmitter import TransmitterCreate, TransmitterInDB, TransmitterBase, TransmitterUpdate, Transmitter
 
 from app.crud.base import CRUDBase
 
 
-class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterUpdate]):
-    def get_transmitters_by_mode_country(self,
+class CRUDTransmitter(CRUDBase[Transmitter, TransmitterCreate, TransmitterUpdate]):
+    def get_transmitters_by_band_country(self,
                                          db: Session,
                                          band: str,
-                                         country: str) -> List[TransmitterModel]:
+                                         country: str) -> List[Transmitter]:
         country_id = get_country(db, country)
         return db.query(TransmitterModel).filter(
-            TransmitterModel.country_id == country_id
+            TransmitterModel.country_id == country
         ).filter(
             TransmitterModel.band == band
-        )
+        ).all()
 
     def get_transmitters(self,
                          db: Session,
@@ -30,10 +30,9 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
                          polarisation: Optional[str] = None,
                          location: Optional[str] = None,
                          region: Optional[str] = None,
-                         station: Optional[str] = None) -> List[TransmitterModel]:
-        country_id = get_country(db, country)
+                         station: Optional[str] = None) -> List[Transmitter]:
         query = db.query(TransmitterModel).filter(
-            TransmitterModel.country_id == country_id
+            TransmitterModel.country_id == country
         ).filter(TransmitterModel.band == band)
         if frequency is not None:
             query = query.filter(TransmitterModel.frequency == frequency)
@@ -42,13 +41,15 @@ class CRUDTransmitter(CRUDBase[TransmitterModel, TransmitterCreate, TransmitterU
         if polarisation is not None:
             query = query.filter(TransmitterModel.polarisation == polarisation)
         if location is not None:
-            query = query.filter(TransmitterModel.location.find(location))
+            loc = f'%{location}%'
+            query = query.filter(TransmitterModel.location.ilike(loc))
         if region is not None:
-            query = query.filter(TransmitterModel.region.find(region))
+            reg = f'%{region}%'
+            query = query.filter(TransmitterModel.region.ilike(reg))
         if station is not None:
-            query = query.filter(TransmitterModel.station.find(station))
-
-        return query
+            sta = f'%{station}%'
+            query = query.filter(TransmitterModel.station.ilike(sta))
+        return query.all()
 
     def get_transmitter_by_id(self,
                               db: Session,

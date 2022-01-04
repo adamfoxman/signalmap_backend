@@ -15,7 +15,7 @@ class Transmitter(Base):
     erp = Column(Float, default=1)
     antenna_height = Column(Integer, default=100)
     antenna_pattern = Column(String, default="ND")
-    antenna_direction = Column(Integer)
+    antenna_direction = Column(String, default="")
     pattern_h = Column(String, default="")
     pattern_v = Column(String, default="")
     polarisation = Column(String, default="")

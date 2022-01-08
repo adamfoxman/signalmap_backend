@@ -7,22 +7,22 @@ class TransmitterBase(BaseModel):
     external_id: int
     band: str
     frequency: float
-    mode: str
-    erp: float
-    antenna_height: int
-    antenna_pattern: str
-    antenna_direction: str
+    mode: Optional[str] = None
+    erp: Optional[float] = None
+    antenna_height: Optional[int] = None
+    antenna_pattern: Optional[str] = None
+    antenna_direction: Optional[str] = None
     pattern_h: Optional[str] = None
     pattern_v: Optional[str] = None
-    polarisation: str
+    polarisation: Optional[str] = None
     location: str
-    region: str
+    region: Optional[str] = None
     country_id: str
     latitude: float
     longitude: float
-    precision: int
-    height: int
-    station: str
+    precision: Optional[int] = None
+    height: Optional[int] = None
+    station: Optional[str] = None
     kml_file: Optional[str] = None
     coverage_file: Optional[str] = None
 

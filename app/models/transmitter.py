@@ -20,7 +20,7 @@ class Transmitter(Base):
     pattern_v = Column(String, default="")
     polarisation = Column(String, default="")
     location = Column(String)
-    region = Column(String)
+    region = Column(String, default="")
     country_id = Column(String, ForeignKey("countries.country_code"))
     latitude = Column(Float)
     longitude = Column(Float)

@@ -9,11 +9,11 @@ from app.schemas.transmitter import TransmitterCreate, TransmitterInDB, Transmit
 from app.crud.base import CRUDBase
 
 
-class CRUDTransmitter(CRUDBase[Transmitter, TransmitterCreate, TransmitterUpdate]):
+class CRUDTransmitter(CRUDBase[TransmitterInDB, TransmitterCreate, TransmitterUpdate]):
     def get_transmitters_by_band_country(self,
                                          db: Session,
                                          band: str,
-                                         country: str) -> List[Transmitter]:
+                                         country: str) -> List[TransmitterInDB]:
         country_id = get_country(db, country)
         return db.query(TransmitterModel).filter(
             TransmitterModel.country_id == country
@@ -30,7 +30,7 @@ class CRUDTransmitter(CRUDBase[Transmitter, TransmitterCreate, TransmitterUpdate
                          polarisation: Optional[str] = None,
                          location: Optional[str] = None,
                          region: Optional[str] = None,
-                         station: Optional[str] = None) -> List[Transmitter]:
+                         station: Optional[str] = None) -> List[TransmitterInDB]:
         query = db.query(TransmitterModel).filter(
             TransmitterModel.country_id == country
         ).filter(TransmitterModel.band == band)
@@ -53,11 +53,11 @@ class CRUDTransmitter(CRUDBase[Transmitter, TransmitterCreate, TransmitterUpdate
 
     def get_transmitter_by_id(self,
                               db: Session,
-                              transmitter_id: int) -> TransmitterModel:
+                              transmitter_id: int) -> TransmitterInDB:
         query = db.query(TransmitterModel).filter(TransmitterModel.id == transmitter_id).first()
         return query
 
-    def get_transmitter_by_external_id(self, db: Session, band: str, external_id: int) -> TransmitterModel:
+    def get_transmitter_by_external_id(self, db: Session, band: str, external_id: int) -> TransmitterInDB:
         query = db.query(TransmitterModel).filter(
             TransmitterModel.band == band
         ).filter(

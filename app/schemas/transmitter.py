@@ -25,6 +25,10 @@ class TransmitterBase(BaseModel):
     station: Optional[str] = None
     kml_file: Optional[str] = None
     coverage_file: Optional[str] = None
+    north_bound: Optional[float] = None
+    south_bound: Optional[float] = None
+    east_bound: Optional[float] = None
+    west_bound: Optional[float] = None
 
 
 class TransmitterCreate(TransmitterBase):

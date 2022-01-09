@@ -27,7 +27,10 @@ class Transmitter(Base):
     precision = Column(Integer, default=0)
     height = Column(Integer, default=0)
     station = Column(String, default="")
-    kml_file = Column(String, default="")
     coverage_file = Column(String, default="")
+    north_bound = Column(Float, default=0)
+    south_bound = Column(Float, default=0)
+    east_bound = Column(Float, default=0)
+    west_bound = Column(Float, default=0)
 
     country = relationship("Country", back_populates="transmitters")

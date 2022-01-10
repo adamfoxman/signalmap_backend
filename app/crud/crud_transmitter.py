@@ -87,8 +87,11 @@ class CRUDTransmitter(CRUDBase[TransmitterInDB, TransmitterCreate, TransmitterUp
                                           precision=transmitter.precision,
                                           height=transmitter.height,
                                           station=transmitter.station,
-                                          kml_file=transmitter.kml_file,
-                                          coverage_file=transmitter.coverage_file)
+                                          coverage_file=transmitter.coverage_file,
+                                          north_bound=transmitter.north_bound,
+                                          south_bound=transmitter.south_bound,
+                                          east_bound=transmitter.east_bound,
+                                          west_bound=transmitter.west_bound)
         db.add(db_transmitter)
         db.commit()
         db.refresh(db_transmitter)

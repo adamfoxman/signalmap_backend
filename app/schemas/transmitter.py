@@ -23,7 +23,9 @@ class TransmitterBase(BaseModel):
     precision: Optional[int] = None
     height: Optional[int] = None
     station: Optional[str] = None
-    kml_file: Optional[str] = None
+    station_id: Optional[int] = None
+    logo_id: Optional[int] = None
+    logo_token: Optional[int] = None
     coverage_file: Optional[str] = None
     north_bound: Optional[float] = None
     south_bound: Optional[float] = None

@@ -19,13 +19,17 @@ class CRUDCountry(CRUDBase[Country, CountryBase, CountryCreate]):
 
     def create_country(self, db: Session,
                        country: CountryBase) -> CountryModel:
-        db_country = CountryModel(country_code=country.country_code,
-                                  country_name=country.country_name,
-                                  is_enabled=country.is_enabled)
-        db.add(db_country)
-        db.commit()
-        db.refresh(db_country)
-        return db_country
+        c = self.get_country(db, country.country_code)
+        if c:
+            return c
+        else:
+            db_country = CountryModel(country_code=country.country_code,
+                                      country_name=country.country_name,
+                                      is_enabled=country.is_enabled)
+            db.add(db_country)
+            db.commit()
+            db.refresh(db_country)
+            return db_country
 
     def update_country(self, db: Session, country_code: str,
                        obj: Union[Country, Dict[Country, Any]]) -> CountryModel:

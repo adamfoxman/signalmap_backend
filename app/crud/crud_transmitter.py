@@ -1,3 +1,5 @@
+import math
+
 from sqlalchemy.orm import Session
 from typing import List, Union, Any, Dict, Optional
 
@@ -7,6 +9,13 @@ from app.models.transmitter import Transmitter as TransmitterModel
 from app.schemas.transmitter import TransmitterCreate, TransmitterInDB, TransmitterBase, TransmitterUpdate, Transmitter
 
 from app.crud.base import CRUDBase
+
+
+def calculate_image_token(station_id: int, logo_id: int) -> int:
+    if station_id <= 0 or logo_id <= 0:
+        return 0
+    return int((float(station_id) * float(logo_id)) -
+               (math.floor(float(station_id) / 345) * math.floor(float(logo_id) / 435)) + 45123)
 
 
 class CRUDTransmitter(CRUDBase[TransmitterInDB, TransmitterCreate, TransmitterUpdate]):
@@ -68,34 +77,40 @@ class CRUDTransmitter(CRUDBase[TransmitterInDB, TransmitterCreate, TransmitterUp
     def create_transmitter(self,
                            db: Session,
                            transmitter: TransmitterCreate) -> TransmitterModel:
-        db_transmitter = TransmitterModel(external_id=transmitter.external_id,
-                                          band=transmitter.band,
-                                          frequency=transmitter.frequency,
-                                          mode=transmitter.mode,
-                                          erp=transmitter.erp,
-                                          antenna_height=transmitter.antenna_height,
-                                          antenna_pattern=transmitter.antenna_pattern,
-                                          antenna_direction=transmitter.antenna_direction,
-                                          pattern_h=transmitter.pattern_h,
-                                          pattern_v=transmitter.pattern_v,
-                                          polarisation=transmitter.polarisation,
-                                          location=transmitter.location,
-                                          region=transmitter.region,
-                                          country_id=transmitter.country_id,
-                                          latitude=transmitter.latitude,
-                                          longitude=transmitter.longitude,
-                                          precision=transmitter.precision,
-                                          height=transmitter.height,
-                                          station=transmitter.station,
-                                          coverage_file=transmitter.coverage_file,
-                                          north_bound=transmitter.north_bound,
-                                          south_bound=transmitter.south_bound,
-                                          east_bound=transmitter.east_bound,
-                                          west_bound=transmitter.west_bound)
-        db.add(db_transmitter)
-        db.commit()
-        db.refresh(db_transmitter)
-        return db_transmitter
+        t = self.get_transmitter_by_external_id(db, transmitter.band, transmitter.external_id)
+        if t is None:
+            logo_token = calculate_image_token(transmitter.station_id, transmitter.logo_id)
+            db_transmitter = TransmitterModel(external_id=transmitter.external_id,
+                                              band=transmitter.band,
+                                              frequency=transmitter.frequency,
+                                              mode=transmitter.mode,
+                                              erp=transmitter.erp,
+                                              antenna_height=transmitter.antenna_height,
+                                              antenna_pattern=transmitter.antenna_pattern,
+                                              antenna_direction=transmitter.antenna_direction,
+                                              pattern_h=transmitter.pattern_h,
+                                              pattern_v=transmitter.pattern_v,
+                                              polarisation=transmitter.polarisation,
+                                              location=transmitter.location,
+                                              region=transmitter.region,
+                                              country_id=transmitter.country_id,
+                                              latitude=transmitter.latitude,
+                                              longitude=transmitter.longitude,
+                                              precision=transmitter.precision,
+                                              height=transmitter.height,
+                                              station=transmitter.station,
+                                              station_id=transmitter.station_id,
+                                              logo_id=transmitter.logo_id,
+                                              logo_token=logo_token,
+                                              coverage_file=transmitter.coverage_file,
+                                              north_bound=transmitter.north_bound,
+                                              south_bound=transmitter.south_bound,
+                                              east_bound=transmitter.east_bound,
+                                              west_bound=transmitter.west_bound)
+            db.add(db_transmitter)
+            db.commit()
+            db.refresh(db_transmitter)
+            return db_transmitter
 
     def update_transmitter(self, db: Session,
                            transmitter: TransmitterModel,

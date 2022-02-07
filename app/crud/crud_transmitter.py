@@ -101,7 +101,6 @@ class CRUDTransmitter(CRUDBase[TransmitterInDB, TransmitterCreate, TransmitterUp
                                               station=transmitter.station,
                                               station_id=transmitter.station_id,
                                               logo_id=transmitter.logo_id,
-                                              logo_token=logo_token,
                                               coverage_file=transmitter.coverage_file,
                                               north_bound=transmitter.north_bound,
                                               south_bound=transmitter.south_bound,

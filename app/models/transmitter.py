@@ -29,7 +29,6 @@ class Transmitter(Base):
     station = Column(String, default="")
     station_id = Column(Integer, default=0)
     logo_id = Column(Integer, default=0)
-    logo_token = Column(Integer, default=0)
     coverage_file = Column(String, default="")
     north_bound = Column(Float, default=0)
     south_bound = Column(Float, default=0)

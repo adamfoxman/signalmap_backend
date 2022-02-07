@@ -1,6 +1,29 @@
 import enum
-from typing import List, Optional
-from pydantic import BaseModel
+import math
+from typing import List, Optional, Generic, TypeVar
+from pydantic import BaseModel, Field, ValidationError
+from pydantic.fields import ModelField
+
+
+ExprType = TypeVar('ExprType')
+
+
+# https://github.com/samuelcolvin/pydantic/issues/935
+class Expr(Generic[ExprType]):
+    validate_always = True
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, v, field: ModelField, values):
+        result = eval(v, None, values)
+        typ = field.sub_fields[0]
+        validated, error = typ.validate(result, {}, loc='Expr')
+        if error:
+            raise ValidationError([error], cls)
+        return validated
 
 
 class TransmitterBase(BaseModel):
@@ -25,7 +48,8 @@ class TransmitterBase(BaseModel):
     station: Optional[str] = None
     station_id: Optional[int] = None
     logo_id: Optional[int] = None
-    logo_token: Optional[int] = None
+    logo_token: Expr[int] = Field('int((float(station_id) * float(logo_id)) - (math.floor(float(station_id) / 345) * '
+                                  'math.floor(float(logo_id) / 435)) + 45123)')
     coverage_file: Optional[str] = None
     north_bound: Optional[float] = None
     south_bound: Optional[float] = None
